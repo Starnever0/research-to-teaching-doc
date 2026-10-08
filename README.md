@@ -2,7 +2,21 @@
 
 > 把一个主题或已有材料，转化为**面向大众的科普 / 教学向文档** —— 可选同时产出一份**带插图的自包含 HTML 网页**。
 
-这是一个 [WorkBuddy](https://www.workbuddy.cn) Skill：把「调研 → 写成通俗易懂的科普稿 →（可选）做成可分享网页」这条流程固化下来，让每次产出都保持一致的风格与质量。
+一个遵循 **SKILL.md** 约定的通用 Agent Skill。它把「调研 → 写成通俗易懂的科普稿 →（可选）做成可分享网页」这条流程固化下来，让每次产出都保持一致的风格与质量。
+
+**不绑定任何特定 Agent**：任何支持该约定的 agent 都可以直接加载使用。
+
+---
+
+## 效果预览
+
+**输入** —— 一份技术向的调研稿（术语密、数据多、论证长）：
+
+![调研素材示例](assets/screenshots/preview-research-doc.png)
+
+**输出** —— 一篇通俗的科普稿，以及可选的网页版（单文件、离线可开）：
+
+![科普网页成品](assets/screenshots/preview-web-page.png)
 
 ---
 
@@ -35,19 +49,21 @@
 
 ## 安装
 
-把本目录放到 WorkBuddy 的**用户级 skills** 目录下（跨项目可用）：
+本 skill 遵循通用的 `SKILL.md` 约定，安装方式就是**把它放进你所使用 agent 的 skills 目录**（目录名保持 `research-to-teaching-doc`）：
 
 ```bash
-# macOS / Linux
-git clone https://github.com/Starnever0/research-to-teaching-doc.git \
-  ~/.workbuddy/skills/research-to-teaching-doc
-
-# Windows (PowerShell)
-git clone https://github.com/Starnever0/research-to-teaching-doc.git `
-  "$env:USERPROFILE\.workbuddy\skills\research-to-teaching-doc"
+git clone https://github.com/Starnever0/research-to-teaching-doc.git <你的-skills-目录>/research-to-teaching-doc
 ```
 
-放置后的目录名需与 skill 名一致（`research-to-teaching-doc`）。
+常见 agent 的 skills 目录示例：
+
+| Agent | 用户级目录 |
+| --- | --- |
+| Claude Code / Anthropic Agent Skills | `~/.claude/skills/` |
+| WorkBuddy | `~/.workbuddy/skills/` |
+| 其他 | 你所使用 agent 对应的 skills 目录 |
+
+若你的 agent 不使用 skills 目录，也可以直接把 `SKILL.md` 作为系统提示 / 上下文的一部分交给它。
 
 ## 使用
 
@@ -97,7 +113,8 @@ research-to-teaching-doc/
 │   └── html-page-spec.md       # 网页规范：设计令牌、组件表、SVG 插图要求、验收清单
 └── assets/
     ├── page-template.html      # 可复用网页骨架（含占位符，改内容不动样式）
-    └── sample/                 # 参考样例（文档 + 网页）
+    ├── sample/                 # 参考样例（文档 + 网页）
+    └── screenshots/            # README 预览图
 ```
 
 ## 标准章节骨架
