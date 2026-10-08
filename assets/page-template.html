@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{标题}} · 科普版</title>
+<!--
+  科普网页骨架模板（research-to-teaching-doc）
+  用法：复制本文件 → 替换占位内容 → 按需增删插图。
+  约束：保持自包含（无任何外部依赖）；样式与设计令牌不要改动，只改内容。
+  占位符：{{标题}} {{副标题}} {{日期}} {{阅读时长}} {{正文}}
+-->
+<style>
+  :root{
+    --ink:#24241F; --ink-soft:#5E5E56; --ink-faint:#8E8E84;
+    --paper:#FFFFFF; --bg:#F6F4EF; --line:#E7E3D9;
+    --blue:#1B5FA5; --blue-bg:#E8F1FB; --blue-line:#B9D5F2;
+    --purple:#524AB4; --purple-bg:#EEEDFD; --purple-line:#CAC6F0;
+    --amber:#8A5408; --amber-bg:#FAEEDA; --amber-line:#EFD39B;
+    --teal:#0E6B54; --teal-bg:#E2F5EE; --teal-line:#A9DECB;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+    line-height:1.85; font-size:16px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:800px; margin:0 auto; padding:0 24px 96px; }
+
+  .hero{ background:linear-gradient(180deg,#FFFFFF 0%,#FBFAF6 100%); border-bottom:1px solid var(--line); padding:72px 24px 56px; margin-bottom:40px; }
+  .hero-inner{ max-width:800px; margin:0 auto; }
+  .kicker{ display:inline-block; font-size:13px; letter-spacing:.08em; color:var(--blue); background:var(--blue-bg); border:1px solid var(--blue-line); padding:4px 12px; border-radius:999px; margin-bottom:20px; font-weight:500; }
+  .hero h1{ font-size:38px; line-height:1.3; font-weight:600; margin:0 0 16px; letter-spacing:-.01em; }
+  .hero .sub{ font-size:17px; color:var(--ink-soft); margin:0 0 22px; max-width:640px; }
+  .hero .meta{ font-size:13px; color:var(--ink-faint); }
+
+  .toc{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin:0 0 52px; }
+  .toc-title{ font-size:13px; letter-spacing:.1em; color:var(--ink-faint); margin-bottom:12px; }
+  .toc ol{ margin:0; padding-left:20px; columns:2; column-gap:32px; }
+  .toc li{ font-size:14.5px; margin:5px 0; }
+  .toc a{ color:var(--ink-soft); text-decoration:none; }
+  .toc a:hover{ color:var(--blue); }
+  @media(max-width:620px){ .toc ol{ columns:1; } }
+
+  section{ margin-bottom:56px; scroll-margin-top:20px; }
+  h2{ font-size:24px; font-weight:600; margin:0 0 22px; line-height:1.4; display:flex; align-items:baseline; gap:12px; letter-spacing:-.01em; }
+  h2 .num{ flex:none; display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px; font-size:15px; font-weight:600; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-line); transform:translateY(2px); }
+  h3{ font-size:18px; font-weight:600; margin:34px 0 12px; }
+  p{ margin:0 0 16px; }
+  strong{ font-weight:600; }
+  .lead{ font-size:17.5px; }
+  a{ color:var(--blue); }
+
+  .cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0; }
+  @media(max-width:620px){ .cards{ grid-template-columns:1fr; } }
+  .card{ border-radius:14px; padding:20px 22px; border:1px solid var(--line); background:var(--paper); }
+  .card.blue{ background:var(--blue-bg); border-color:var(--blue-line); }
+  .card.purple{ background:var(--purple-bg); border-color:var(--purple-line); }
+  .card h4{ margin:0 0 4px; font-size:17px; font-weight:600; }
+  .card.blue h4{ color:#134A80; } .card.purple h4{ color:#41399A; }
+  .card .role{ font-size:12.5px; color:var(--ink-faint); margin-bottom:14px; }
+  .card ul{ margin:0; padding-left:18px; font-size:14.5px; color:var(--ink-soft); }
+  .card li{ margin:5px 0; }
+  .card.blue li::marker{ color:var(--blue); } .card.purple li::marker{ color:var(--purple); }
+
+  .note{ border-left:3px solid var(--amber-line); background:var(--amber-bg); border-radius:0 12px 12px 0; padding:16px 20px; margin:22px 0; font-size:15px; }
+  .note.info{ border-left-color:var(--blue-line); background:var(--blue-bg); }
+  .note.warn{ border-left-color:#E9B7B7; background:#FCEBEB; }
+  .note .tag{ font-weight:600; display:block; margin-bottom:4px; font-size:14px; }
+  .note.warn .tag{ color:#A32D2D; }
+
+  figure{ margin:28px 0; }
+  .fig{ background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:26px 20px 18px; }
+  .fig svg{ display:block; width:100%; height:auto; }
+  figcaption{ font-size:13px; color:var(--ink-faint); text-align:center; margin-top:12px; }
+
+  .steps{ counter-reset:step; margin:26px 0; }
+  .step{ position:relative; padding:0 0 22px 54px; border-left:2px solid var(--line); margin-left:15px; }
+  .step:last-child{ border-left-color:transparent; padding-bottom:0; }
+  .step::before{ counter-increment:step; content:counter(step); position:absolute; left:-16px; top:0; width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:14px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  .step h5{ margin:2px 0 4px; font-size:16px; font-weight:600; }
+  .step p{ margin:0; font-size:15px; color:var(--ink-soft); }
+
+  .table-scroll{ overflow-x:auto; margin:22px 0; }
+  table{ border-collapse:collapse; width:100%; font-size:14.5px; background:var(--paper); border-radius:12px; overflow:hidden; }
+  th,td{ text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ background:#F1EFE9; font-weight:600; font-size:13.5px; color:var(--ink-soft); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td code{ white-space:nowrap; }
+
+  code{ font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; font-size:13.5px; background:#F1EFE9; padding:2px 6px; border-radius:5px; color:#3B3B33; }
+  pre{ background:#2C2C28; color:#EDEBE4; padding:18px 20px; border-radius:12px; overflow-x:auto; font-size:13.5px; line-height:1.7; margin:18px 0; }
+  pre code{ background:none; color:inherit; padding:0; font-size:13.5px; }
+  pre .cmt{ color:#9C9A90; }
+
+  .ratio{ margin:24px 0; }
+  .ratio-bar{ display:flex; height:44px; border-radius:10px; overflow:hidden; border:1px solid var(--line); }
+  .ratio-bar .seg{ display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; font-weight:500; }
+  .ratio-bar .cheap{ width:95%; background:#5B9BD5; }
+  .ratio-bar .strong{ width:5%; background:var(--purple); }
+  .ratio-legend{ display:flex; gap:24px; margin-top:10px; font-size:13.5px; color:var(--ink-soft); flex-wrap:wrap; }
+  .ratio-legend span::before{ content:"■"; margin-right:6px; }
+  .ratio-legend .l1::before{ color:#5B9BD5; } .ratio-legend .l2::before{ color:var(--purple); }
+
+  .banner{ background:var(--purple-bg); border:1px solid var(--purple-line); border-radius:14px; padding:26px 28px; margin:0 0 56px; font-size:17px; line-height:1.8; }
+  .banner .big{ display:block; font-size:19px; font-weight:600; color:#41399A; margin-bottom:6px; }
+
+  .good-bad{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:22px 0; }
+  @media(max-width:620px){ .good-bad{ grid-template-columns:1fr; } }
+  .good-bad .col{ border-radius:12px; padding:18px 20px; border:1px solid var(--line); }
+  .good-bad .yes{ background:var(--teal-bg); border-color:var(--teal-line); }
+  .good-bad .no{ background:#FCEBEB; border-color:#F0C4C4; }
+  .good-bad h4{ margin:0 0 10px; font-size:15.5px; }
+  .good-bad .yes h4{ color:var(--teal); } .good-bad .no h4{ color:#A32D2D; }
+  .good-bad ul{ margin:0; padding-left:18px; font-size:14.5px; color:var(--ink-soft); }
+  .good-bad li{ margin:6px 0; }
+
+  footer{ border-top:1px solid var(--line); margin-top:64px; padding-top:26px; font-size:13.5px; color:var(--ink-faint); text-align:center; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="kicker">{{栏目标签，如：XX · 功能科普}}</div>
+    <h1>{{标题：用比喻写成的一句话}}</h1>
+    <p class="sub">{{副标题：不堆公式、不列数据，只讲清它是什么、为什么这样设计、聪明在哪里。}}</p>
+    <div class="meta">{{日期}} · 阅读约 {{N}} 分钟</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#s1">场景开场</a></li>
+      <li><a href="#s2">一句话说清它是什么</a></li>
+      <li><a href="#s3">和熟悉的东西有什么不同</a></li>
+      <li><a href="#s4">实际使用时长什么样</a></li>
+      <li><a href="#s5">背后是怎么运作的</a></li>
+      <li><a href="#s6">它聪明在哪</a></li>
+      <li><a href="#s7">什么时候用，什么时候别用</a></li>
+      <li><a href="#s8">要留心的地方</a></li>
+      <li><a href="#s9">用一句话记住它</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <h2><span class="num">1</span>{{章节标题}}</h2>
+    <p class="lead">{{用读者经历过的具体场景开场，不要宏大背景。}}</p>
+    <p>{{展开痛点："没有它会怎样"。}}</p>
+  </section>
+
+  <section id="s2">
+    <h2><span class="num">2</span>{{章节标题}}</h2>
+    <div class="banner">
+      <span class="big">{{一句话定义，也就是全文的核心比喻。}}</span>
+      {{用一句话引出后续的角色/比喻体系。}}
+    </div>
+    <div class="cards">
+      <div class="card blue">
+        <h4>{{角色 A}}</h4>
+        <div class="role">{{定位｜通常是谁}}</div>
+        <ul><li>{{要点 1}}</li><li>{{要点 2}}</li><li>{{要点 3}}</li></ul>
+      </div>
+      <div class="card purple">
+        <h4>{{角色 B}}</h4>
+        <div class="role">{{定位｜通常是谁}}</div>
+        <ul><li>{{要点 1}}</li><li>{{要点 2}}</li><li>{{要点 3}}</li></ul>
+      </div>
+    </div>
+    <div class="note warn">
+      <span class="tag">关键点</span>
+      {{全篇最该记住的一条设定。}}
+    </div>
+  </section>
+
+  <section id="s3">
+    <h2><span class="num">3</span>{{章节标题}}</h2>
+    <p>{{过渡句：把新概念和读者已熟悉的东西并排看。}}</p>
+
+    <figure>
+      <div class="fig">
+        <!-- 插图：旧范式结构。替换为真实的 SVG；保留 role/title/desc 与 marker/fill=none -->
+        <svg viewBox="0 0 720 200" role="img" xmlns="http://www.w3.org/2000/svg">
+          <title>{{插图标题}}</title>
+          <desc>{{插图说明，供无障碍阅读}}</desc>
+          <rect x="260" y="60" width="200" height="80" rx="10" fill="#E8F1FB" stroke="#1B5FA5" stroke-width="1"/>
+          <text x="360" y="100" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="600" fill="#134A80">{{节点文字}}</text>
+        </svg>
+      </div>
+      <figcaption>{{这张图在说什么}}</figcaption>
+    </figure>
+
+    <p>{{一句话对比收束，如："老办法是……，新办法是……"。}}</p>
+
+    <h3>3.3　还有哪些相似概念</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>方式</th><th>什么时候出场</th><th>打个比方</th></tr></thead>
+        <tbody>
+          <tr><td><strong>{{本主题}}</strong></td><td>{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>{{相似概念 A}}</td><td>{{...}}</td><td>{{...}}</td></tr>
+          <tr><td>{{相似概念 B}}</td><td>{{...}}</td><td>{{...}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note info">
+      <span class="tag">💡 延伸小知识：{{易混淆概念}}</span>
+      {{用准确、简短的方式辨析；错误的类比比没有类比更糟。}}
+    </div>
+  </section>
+
+  <section id="s4">
+    <h2><span class="num">4</span>{{章节标题}}</h2>
+    <pre><code><span class="cmt"># 示例命令</span>
+{{command}}</code></pre>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>状态 / 情况</th><th>含义</th></tr></thead>
+        <tbody><tr><td><strong>{{...}}</strong></td><td>{{...}}</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="s5">
+    <h2><span class="num">5</span>{{章节标题}}</h2>
+    <div class="steps">
+      <div class="step"><h5>{{步骤 1}}</h5><p>{{说明}}</p></div>
+      <div class="step"><h5>{{步骤 2}}</h5><p>{{说明}}</p></div>
+      <div class="step"><h5>{{步骤 3}}</h5><p>{{说明}}</p></div>
+      <div class="step"><h5>{{步骤 4}}</h5><p>{{说明}}</p></div>
+    </div>
+  </section>
+
+  <section id="s6">
+    <h2><span class="num">6</span>{{章节标题}}</h2>
+    <h3>亮点一：{{...}}</h3>
+    <p>{{说明这个设计为什么巧妙，以及它的代价。}}</p>
+    <div class="ratio">
+      <div class="ratio-bar">
+        <div class="seg cheap">{{占比大的部分}}</div>
+        <div class="seg strong"></div>
+      </div>
+      <div class="ratio-legend">
+        <span class="l1">{{图例 1}}</span>
+        <span class="l2">{{图例 2}}</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="s7">
+    <h2><span class="num">7</span>{{章节标题}}</h2>
+    <div class="good-bad">
+      <div class="col yes"><h4>✅ 适合的场景</h4><ul><li>{{...}}</li><li>{{...}}</li></ul></div>
+      <div class="col no"><h4>❌ 不适合的场景</h4><ul><li>{{...}}</li><li>{{...}}</li></ul></div>
+    </div>
+  </section>
+
+  <section id="s8">
+    <h2><span class="num">8</span>{{章节标题}}</h2>
+    <ol><li><strong>{{局限 1}}</strong>{{说明}}</li><li><strong>{{局限 2}}</strong>{{说明}}</li></ol>
+  </section>
+
+  <section id="s9">
+    <h2><span class="num">9</span>用一句话记住它</h2>
+    <div class="banner">
+      <span class="big">{{呼应开篇比喻的一句话总结。}}</span>
+      {{一句面向所有人的共情式升华。}}
+    </div>
+  </section>
+
+  <footer>
+    本文为科普向解读，力求通俗易懂；具体信息请以官方最新资料为准。<br>
+    整理：YY ⚡ ｜ {{日期}}
+  </footer>
+
+</div>
+</body>
+</html>
